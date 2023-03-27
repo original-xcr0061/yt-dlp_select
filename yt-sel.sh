@@ -29,11 +29,11 @@ echo ""
 tput sgr0
 
 PS3="$(tput setaf 6) $(tput bold)Please Select your Choice: $(tput sgr0) "
-options=("Best Quality Available" "1080p" "720p" "Quit")
+options=("Best Quality - Full Video" "Best Quality - Audio Only" "720p" "Quit")
 select opt in "${options[@]}"
 do
     case $opt in
-        "Best Quality Available")
+        "Best Quality - Full Video")
 		tput setaf 6
 		echo -e "$(tput bold) $(tput smul)\nDownloading Best Quality......$(tput rmul)"
 		tput sgr0
@@ -44,7 +44,7 @@ do
 		echo ""
 		break
             ;;
-        "1080p")
+        "Best Quality - Audio Only")
         	tput setaf 6
 		echo -e "$(tput bold) $(tput smul)\nNot yet available, still doing research!!$(tput rmul)"    
 		tput sgr0
