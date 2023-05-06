@@ -3,11 +3,11 @@
 # Refer to YT-DLP wiki page for more information. https://github.com/yt-dlp/yt-dlp/wiki
 
 #########################################
-#	YT-DLP - DOWNLOAD QUALITY	#
-#		SELECTIONS		#
-#					#
+#       YT-DLP - DOWNLOAD QUALITY       #
+#           SELECTIONS                  #
+#                                       #
 #########################################
-#		by XCR0061		#
+#           by XCR0061                  #
 #########################################
 
 set -o errexit
@@ -34,38 +34,38 @@ select opt in "${options[@]}"
 do
     case $opt in
         "Best Quality - Full Video")
-		tput setaf 6
-		echo -e "$(tput bold) $(tput smul)\nDownloading Best Quality......$(tput rmul)"
-		tput sgr0
-		echo ""
-		read -p "Please Enter/Paste URL: " url
-		echo ""
-		yt-dlp -f "bestvideo[ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio" --merge-output-format mp4 "$url"
-		echo ""
-		break
+            tput setaf 6
+            echo -e "$(tput bold) $(tput smul)\nDownloading Best Quality......$(tput rmul)"
+            tput sgr0
+            echo ""
+            read -p "Please Enter/Paste URL: " url
+            echo ""
+            yt-dlp -f "bestvideo[ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio" --merge-output-format mp4 "$url"
+            echo ""
+            break
             ;;
         "Best Quality - Audio Only")
-        	tput setaf 6
-		echo -e "$(tput bold) $(tput smul)\nNot yet available, still doing research!!$(tput rmul)"    
-		tput sgr0
-		echo ""
-		echo ""
+            tput setaf 6
+            echo -e "$(tput bold) $(tput smul)\nNot yet available, still doing research!!$(tput rmul)"    
+            tput sgr0
+            echo ""
+            echo ""
             ;;
         "720p")
-        	tput setaf 6
-		echo -e "$(tput bold) $(tput smul)\nNot yet available, still doing research!!$(tput rmul)"    
-		tput sgr0
-		sleep 2
-		echo ""
-		echo ""
-            ;;
-	"Quit")
+            tput setaf 6
+            echo -e "$(tput bold) $(tput smul)\nNot yet available, still doing research!!$(tput rmul)"    
+            tput sgr0
+            sleep 2
             echo ""
-	    break
+            echo ""
+            ;;
+        "Quit")
+            echo ""
+            break
             ;;
         *) echo "...Invalid option"
-	   echo ""
-	    ;;
+            echo ""
+            ;;
     esac
 done
 
