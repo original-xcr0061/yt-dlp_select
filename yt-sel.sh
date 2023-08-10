@@ -42,8 +42,9 @@ else
     exit 1
 fi
 
-## MENU Options available(4) & selection prompt
+## MENU Options (4) & selection prompt
 PS3="$(tput setaf 6) $(tput bold)Please Select your Choice: $(tput sgr0) "
+
 options=("Best available Quality - Full Video" "1080p HD - Full Video" "Audio Only - 192kbps MP3 Output" "Quit")
 select opt in "${options[@]}"
 do
@@ -56,6 +57,7 @@ do
             yt-dlp -f "bestvideo[ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio" --merge-output-format mp4 "$URL"
             echo
 
+            ## Print done
             echo -e "$(tput setaf 6) $(tput bold)\nAll Done$(tput sgr0)"
             break
             ;;
@@ -67,10 +69,10 @@ do
             yt-dlp -S res:1080,ext:mp4:m4a --merge-output-format mp4 "$URL"
             echo
 
+            ## Print done
             echo -e "$(tput setaf 6) $(tput bold)\nAll Done$(tput sgr0)"
             break
             ;;
-
 
         ## Option 3
         "Audio Only - 192kbps MP3 Output")
@@ -83,42 +85,46 @@ do
             ffmpeg -i "$filename" -b:a 192k "${filename%.m4a}.mp3"
 
             ## Check if the conversion was successful
-            if [ $? -eq 0 ]
-            then
+            if [ $? -eq 0 ] ; then
                 ## MP3 File name clean-up and move to Music folder
-                ## Remove space, brackets, and the hash from mp3 file
-                echo -e "$(tput bold) $(tput smul)\nCleaning up and Moving to Music Folder:$(tput rmul) $(tput sgr0)"
+                echo -e "$(tput bold) $(tput smul)\nCleaning up and Moving to Music Folder: /Music/YT-DLP-mp3$(tput rmul) $(tput sgr0)"
 
+                ## Remove space, brackets, and the hash from mp3 file
                 filename2=$(ls *.mp3)
                 clean_filename="${filename2%% \[*}.mp3"
-                echo
-
-                mv -v "$filename2" "$HOME/Music/yt_audio/$clean_filename"
                 echo
 
                 rm -v "$filename"
                 echo
 
-                echo -e "$(tput setaf 6) $(tput bold)\nAll Done$(tput sgr0)"
+                if [ -d "$HOME/Music/YT-DLP-mp3" ] ; then
+                    mv -v "$filename2" "$HOME/Music/YT-DLP-mp3/$clean_filename"
+                    echo
+
+                    ## Print done
+                    echo -e "$(tput setaf 6) $(tput bold)\nAll Done$(tput sgr0)"
+                else
+                    echo "\nUnable to move mp3 file: Directory /Music/YT-DLP-mp3 does not exist"
+                    exit 1
+                fi
             else
                 echo "Conversion failed. Original file retained."
             fi
 
-            echo 
+            echo
             break
             ;;
 
         ## Option 4
         "Quit")
-            echo 
+            echo
             break
             ;;
 
         ## If unavailable option was selected
         *)
             echo "...Invalid option"
-            echo 
+            echo
             ;;
-
     esac
 done
