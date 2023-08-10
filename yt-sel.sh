@@ -3,11 +3,11 @@
 ## Refer to YT-DLP wiki page for more information. https://github.com/yt-dlp/yt-dlp/wiki
 
 ##############################################
-#       YT-DLP - DOWNLOAD QUALITY            #
-#           SELECTIONS                       #
+#          YT-DLP - DOWNLOAD QUALITY         #
+#               SELECT SCRIPT                #
 #                                            #
 ##############################################
-#           by XCR0061                       #
+#                  by XCR0061                #
 ##############################################
 
 clear
@@ -20,7 +20,7 @@ echo "  #    /     \ \     \___|    |   \   # "
 echo "  #   /___/\  \ \______  /____|_  /   # "
 echo "  #         \_/        \/       \/    # "
 echo "  ##################################### "
-echo "  #        YT-DLP Quality select.     # "
+echo "  #           YT-DLP Script.          # "
 echo "  ##################################### "
 echo ""
 tput sgr0
@@ -40,7 +40,6 @@ audiodir="$HOME/Music/01_YT-DLP-mp3"
 
 ## Check if Directories exist
 if [ ! -d "$outputdir" ] || [ ! -d "$audiodir" ]; then
-
     echo -e "\nPlease Update or Create Directories"
     echo -e "-- Either Directory \"$outputdir\" or \"$audiodir\" does not exist --"
     echo
@@ -52,10 +51,8 @@ read -p "$(tput setaf 6) $(tput bold)Please Enter URL: $(tput sgr0)" URL
 echo
 
 if [[ $URL =~ ^https?:// ]] ; then
-
     echo "MENU:"
 else
-
     echo "Invalid URL"
     echo
     exit 1
@@ -74,9 +71,7 @@ do
 
             ## Download Video & Audio then merge
             echo -e "$(tput setaf 6) $(tput bold) $(tput smul)\nDownloading Full Video:$(tput rmul) $(tput sgr0)"
-
             yt-dlp -f "bv[ext=mp4]+ba[ext=m4a]/b" --merge-output-format mp4 -o "$outputdir/%(title)s.%(ext)s" "$URL"
-
             echo -e "$(tput setaf 6) $(tput bold)\nAll Done$(tput sgr0)"
             echo
             break
@@ -87,9 +82,7 @@ do
 
             ## Download Video & Audio then merge
             echo -e "$(tput setaf 6) $(tput bold) $(tput smul)\nDownloading 1080p:$(tput rmul) $(tput sgr0)"
-
             yt-dlp -S res:1080,ext:mp4:m4a --merge-output-format mp4 -o "$outputdir/%(title)s.%(ext)s" "$URL"
-
             echo -e "$(tput setaf 6) $(tput bold)\nAll Done$(tput sgr0)"
             echo
             break
@@ -100,12 +93,10 @@ do
 
             ## Download the m4a file
             echo -e "$(tput setaf 6) $(tput bold) $(tput smul)\nDownloading Audio only:$(tput rmul) $(tput sgr0)"
-
             yt-dlp -f 'ba[ext=m4a]' -o "$outputdir/%(title)s.%(ext)s" "$URL"
 
             ## Get the downloaded filename & convert to MP3
             inputfile="$(yt-dlp --get-filename -f 'bestaudio[ext=m4a]' -o "$outputdir/%(title)s.%(ext)s" "$URL")"
-
             ffmpeg -i "$inputfile" -b:a 192k "${inputfile%.m4a}.mp3"
             echo
 
@@ -116,13 +107,10 @@ do
                 echo -e "$(tput setaf 6) $(tput bold) $(tput smul)\nCleaning up and Moving MP3 file to Folder: \"$audiodir\"$(tput rmul) $(tput sgr0)"
                 echo
                 outputfile="${inputfile%.m4a}.mp3"
-
                 rm -v "$inputfile"
                 mv -v "$outputfile" "$audiodir/"
-
                 echo -e "$(tput setaf 6) $(tput bold)\nAll Done$(tput sgr0)"
             else
-
                 echo
                 echo "Conversion failed. Original file retained."
                 echo
