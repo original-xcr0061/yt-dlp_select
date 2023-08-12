@@ -31,7 +31,7 @@ tput sgr0
 ## Exit If any command returns a non-zero
 set -o errexit
 ##  Exit if an uninitialized variable is used
-set -u
+set -o nounset
 
 ## Uncomment For debugging
 #set -o xtrace
@@ -49,7 +49,7 @@ if [ ! -d "$outputdir" ] || [ ! -d "$audiodir" ]; then
     echo -e "\nPlease Update Setup or Create Directories"
     echo -e "-- Either Directory \"$outputdir\" or \"$audiodir\" does not exist --"
     echo
-    exit 1
+    exit 2
 fi
 
 ## Request URL and check if valid
@@ -61,7 +61,7 @@ if [[ $URL =~ ^https?:// ]] ; then
 else
     echo "Invalid URL"
     echo
-    exit 1
+    exit 3
 fi
 
 ## MENU Options (4) & selection prompt
