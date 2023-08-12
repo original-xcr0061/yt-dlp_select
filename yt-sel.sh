@@ -26,8 +26,12 @@ echo ""
 tput sgr0
 
 ##############################################
+############### Script Setup #################
 
+## Exit If any command returns a non-zero
 set -o errexit
+##  Exit if an uninitialized variable is used
+set -u
 
 ## Uncomment For debugging
 #set -o xtrace
@@ -38,9 +42,11 @@ outputdir="$HOME/Videos"
 ## Set Audio output Directory
 audiodir="$HOME/Music/01_YT-DLP-mp3"
 
-## Check if Directories exist
+##############################################
+
+## Check if above Directories exist
 if [ ! -d "$outputdir" ] || [ ! -d "$audiodir" ]; then
-    echo -e "\nPlease Update or Create Directories"
+    echo -e "\nPlease Update Setup or Create Directories"
     echo -e "-- Either Directory \"$outputdir\" or \"$audiodir\" does not exist --"
     echo
     exit 1
@@ -69,7 +75,7 @@ do
         ## Option 1
         "Best available Quality - Full Video")
 
-            ## Download Video & Audio then merge
+            ## Download Best Video & Audio then merge into mp4 container
             echo -e "$(tput setaf 6) $(tput bold) $(tput smul)\nDownloading Full Video:$(tput rmul) $(tput sgr0)"
             yt-dlp -f "bv[ext=mp4]+ba[ext=m4a]/b" --merge-output-format mp4 -o "$outputdir/%(title)s.%(ext)s" "$URL"
             echo -e "$(tput setaf 6) $(tput bold)\nAll Done$(tput sgr0)"
@@ -80,7 +86,7 @@ do
         ## Option 2
         "1080p HD - Full Video")
 
-            ## Download Video & Audio then merge
+            ## Download 1080 Video & Audio then merge into mp4 container
             echo -e "$(tput setaf 6) $(tput bold) $(tput smul)\nDownloading 1080p:$(tput rmul) $(tput sgr0)"
             yt-dlp -S res:1080,ext:mp4:m4a --merge-output-format mp4 -o "$outputdir/%(title)s.%(ext)s" "$URL"
             echo -e "$(tput setaf 6) $(tput bold)\nAll Done$(tput sgr0)"
@@ -100,10 +106,10 @@ do
             ffmpeg -i "$inputfile" -b:a 192k "${inputfile%.m4a}.mp3"
             echo
 
-            ## Check if the conversion was successful
+            ## Check if the conversion to mp3 was successful
             if [ $? -eq 0 ] ; then
 
-                ## Delete downloaded file and move MP3 to Music folder
+                ## Delete downloaded file and move MP3 to audiodir selected in setup
                 echo -e "$(tput setaf 6) $(tput bold) $(tput smul)\nCleaning up and Moving MP3 file to Folder: \"$audiodir\"$(tput rmul) $(tput sgr0)"
                 echo
                 outputfile="${inputfile%.m4a}.mp3"
