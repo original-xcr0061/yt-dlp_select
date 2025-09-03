@@ -35,14 +35,14 @@ A user-friendly Bash script to download videos and audio from YouTube (and other
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/yourusername/yt-dlp-select-script.git
-   cd yt-dlp-select-script
+   git clone https://github.com/original-xcr0061/yt-dlp_select
+   cd yt-dlp-select
    ```
 
 2. Make the script executable:
 
    ```bash
-   chmod +x yt-dlp-select.sh
+   chmod +x yt-dlp-sel.sh
    ```
 
 3. Ensure `yt-dlp` and `ffmpeg` are installed and accessible in your `PATH`. For example, on Ubuntu:
@@ -57,7 +57,7 @@ A user-friendly Bash script to download videos and audio from YouTube (and other
 Run the script:
 
 ```bash
-./yt-dlp-select.sh
+./yt-dlp-sel.sh
 ```
 
 1. Enter the **URL** of the video or audio content you want to download.
