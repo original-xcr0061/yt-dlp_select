@@ -3,9 +3,9 @@
 ## Refer to YT-DLP wiki page for more information. https://github.com/yt-dlp/yt-dlp/wiki
 
 ##############################################
-#          YT-DLP - DOWNLOAD QUALITY         #
+#                   YT-DLP                   #
 #               SELECT SCRIPT                #
-#                                            #
+#                Version 1.3                 #
 ##############################################
 #                  by XCR0061                #
 ##############################################
@@ -26,7 +26,7 @@ echo ""
 tput sgr0
 
 ##############################################
-############### Script Setup #################
+############### SCRIPT SETUP #################
 
 ## Exit If any command returns a non-zero
 set -o errexit
@@ -46,7 +46,7 @@ audiodir="$HOME/Music/01_YT-DLP-mp3"
 
 ## Check if above Directories exist
 if [ ! -d "$outputdir" ] || [ ! -d "$audiodir" ]; then
-    echo -e "\nPlease Update Setup or Create Directories"
+    echo -e "\nPlease Update Script Setup line or Create Directories"
     echo -e "-- Either Directory \"$outputdir\" or \"$audiodir\" does not exist --"
     echo
     exit 2
@@ -67,7 +67,7 @@ fi
 ## MENU Options (4) & selection prompt
 PS3="$(tput setaf 6) $(tput bold)Please Select your Choice: $(tput sgr0) "
 
-options=("Best available Quality - Full Video" "1080p HD - Full Video" "Audio Only - 192kbps MP3 Output" "Quit")
+options=("Best available Quality - Full Video" "Custom Format - Choose Video & Audio" "Audio Only - 256kbps MP3 Output" "Quit")
 select opt in "${options[@]}"
 do
     case $opt in
@@ -77,33 +77,53 @@ do
 
             ## Download Best Video & Audio then merge into mp4 container
             echo -e "$(tput setaf 6) $(tput bold) $(tput smul)\nDownloading Full Video:$(tput rmul) $(tput sgr0)"
-            yt-dlp -f "bv[ext=mp4]+ba[ext=m4a]/b" --merge-output-format mp4 -o "$outputdir/%(title)s.%(ext)s" "$URL"
+            yt-dlp -f "bv+ba/b" --merge-output-format mp4 -o "$outputdir/%(title)s.%(ext)s" "$URL"
             echo -e "$(tput setaf 6) $(tput bold)\nAll Done$(tput sgr0)"
             echo
             break
             ;;
 
         ## Option 2
-        "1080p HD - Full Video")
+        "Custom Format - Choose Video & Audio")
 
-            ## Download 1080 Video & Audio then merge into mp4 container
-            echo -e "$(tput setaf 6) $(tput bold) $(tput smul)\nDownloading 1080p:$(tput rmul) $(tput sgr0)"
-            yt-dlp -S res:1080,ext:mp4:m4a --merge-output-format mp4 -o "$outputdir/%(title)s.%(ext)s" "$URL"
+            echo -e "$(tput setaf 6) $(tput bold) $(tput smul)\nAvailable Formats:$(tput rmul) $(tput sgr0)"
+            yt-dlp --list-formats "$URL" || {
+            echo "Failed to retrieve formats for $URL"
+            break
+            }
+
+            echo
+            read -p "Enter the VIDEO format ID you want: " vid
+            read -p "Enter the AUDIO format ID you want: " aud
+
+            # Require both IDs
+            if [ -z "$vid" ] || [ -z "$aud" ]; then
+                echo "Both video and audio IDs are required for this option. Cancelling."
+                break
+            fi
+
+            format="${vid}+${aud}"
+
+            echo -e "$(tput setaf 6) $(tput bold) $(tput smul)\nDownloading Selection: $format$(tput rmul) $(tput sgr0)"
+            yt-dlp -f "$format" --merge-output-format mp4 -o "$outputdir/%(title)s.%(ext)s" "$URL" || {
+            echo "Download failed. Check if the format IDs are valid."
+            break
+            }
             echo -e "$(tput setaf 6) $(tput bold)\nAll Done$(tput sgr0)"
             echo
             break
             ;;
 
         ## Option 3
-        "Audio Only - 192kbps MP3 Output")
+        "Audio Only - 256kbps MP3 Output")
 
             ## Download the m4a file
             echo -e "$(tput setaf 6) $(tput bold) $(tput smul)\nDownloading Audio only:$(tput rmul) $(tput sgr0)"
-            yt-dlp -f 'ba[ext=m4a]' -o "$outputdir/%(title)s.%(ext)s" "$URL"
+            yt-dlp -f "bestaudio" -o "$outputdir/%(title)s.%(ext)s" "$URL"
 
             ## Get the downloaded filename & convert to MP3
-            inputfile="$(yt-dlp --get-filename -f 'bestaudio[ext=m4a]' -o "$outputdir/%(title)s.%(ext)s" "$URL")"
-            ffmpeg -i "$inputfile" -b:a 192k "${inputfile%.m4a}.mp3"
+            inputfile="$(yt-dlp --get-filename -f 'bestaudio' -o "$outputdir/%(title)s.%(ext)s" "$URL")"
+            ffmpeg -i "$inputfile" -b:a 256k "${inputfile%.*}.mp3"
             echo
 
             ## Check if the conversion to mp3 was successful
@@ -112,7 +132,7 @@ do
                 ## Delete downloaded file and move MP3 to audiodir selected in setup
                 echo -e "$(tput setaf 6) $(tput bold) $(tput smul)\nCleaning up and Moving MP3 file to Folder: \"$audiodir\"$(tput rmul) $(tput sgr0)"
                 echo
-                outputfile="${inputfile%.m4a}.mp3"
+                outputfile="${inputfile%.*}.mp3"
                 rm -v "$inputfile"
                 mv -v "$outputfile" "$audiodir/"
                 echo -e "$(tput setaf 6) $(tput bold)\nAll Done$(tput sgr0)"
